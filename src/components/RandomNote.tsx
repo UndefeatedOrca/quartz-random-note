@@ -33,6 +33,7 @@ export default ((opts?: RandomNoteOptions) => {
         title={label}
         data-random-note
         data-notes={JSON.stringify(notes)}
+        data-current-slug={props.fileData?.slug}
         data-face="1"
       >
         <span class="random-note-die" aria-hidden="true">

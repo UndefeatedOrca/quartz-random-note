@@ -109,7 +109,8 @@
     "components": {
       "RandomNote": {
         "displayName": "Random Note",
-        "defaultPosition": "header",
+        "defaultPosition": "left",
+        "defaultGroup": "toolbar",
         "defaultPriority": 55
       }
     }

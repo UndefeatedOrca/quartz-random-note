@@ -7,6 +7,10 @@ const pendingFaceStorageKey = "quartz-random-note-pending-face";
 
 const rollDie = () => String(Math.floor(Math.random() * 6) + 1);
 
+const stripSlashes = (value: string) => value.replace(/^\/+/, "").replace(/\/+$/, "");
+
+const cleanSlug = (slug: string) => stripSlashes(slug).replace(/\/index$/, "");
+
 const parseNotes = (button: HTMLElement): RandomNoteCandidate[] => {
   const rawNotes = button.dataset.notes;
   if (!rawNotes) return [];
@@ -21,14 +25,41 @@ const parseNotes = (button: HTMLElement): RandomNoteCandidate[] => {
   }
 };
 
-const slugToUrl = (slug: string) => {
-  const cleanSlug = slug.replace(/^\/+/, "").replace(/\/index$/, "");
-  const path = cleanSlug.length > 0 ? `/${cleanSlug}` : "/";
+const getContentSlugs = async () => {
+  try {
+    return new Set(Object.keys(await fetchData));
+  } catch {
+    return null;
+  }
+};
+
+const filterContentNotes = async (notes: RandomNoteCandidate[]) => {
+  const contentSlugs = await getContentSlugs();
+  if (!contentSlugs) return notes;
+
+  return notes.filter((note) => contentSlugs.has(note.slug));
+};
+
+const getSitePathPrefix = (button: HTMLElement) => {
+  const currentSlug = cleanSlug(button.dataset.currentSlug ?? "");
+  if (currentSlug.length === 0) return "";
+
+  const currentPath = stripSlashes(decodeURIComponent(window.location.pathname));
+  if (currentPath === currentSlug) return "";
+  if (!currentPath.endsWith(`/${currentSlug}`)) return "";
+
+  return `/${currentPath.slice(0, -currentSlug.length).replace(/\/+$/, "")}`;
+};
+
+const slugToUrl = (slug: string, button: HTMLElement) => {
+  const targetSlug = cleanSlug(slug);
+  const prefix = getSitePathPrefix(button);
+  const path = targetSlug.length > 0 ? `${prefix}/${targetSlug}` : `${prefix}/`;
   return new URL(path, window.location.origin);
 };
 
-const navigateTo = async (slug: string) => {
-  const url = slugToUrl(slug);
+const navigateTo = async (slug: string, button: HTMLElement) => {
+  const url = slugToUrl(slug, button);
   if (window.spaNavigate) {
     await window.spaNavigate(url, false);
     return;
@@ -57,16 +88,15 @@ const bindRandomNote = () => {
     const notes = parseNotes(button);
     button.toggleAttribute("disabled", notes.length === 0);
 
-    const clickHandler = () => {
-      const currentNotes = parseNotes(button);
+    const clickHandler = async () => {
+      const currentNotes = await filterContentNotes(parseNotes(button));
       if (currentNotes.length === 0) return;
 
-      button.dataset.face = rollDie();
       const note = currentNotes[Math.floor(Math.random() * currentNotes.length)];
       if (!note) return;
 
       sessionStorage.setItem(pendingFaceStorageKey, rollDie());
-      void navigateTo(note.slug);
+      await navigateTo(note.slug, button);
     };
 
     button.addEventListener("click", clickHandler);

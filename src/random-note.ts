@@ -15,13 +15,6 @@ const normalizePath = (value: unknown) =>
 const normalizeSlug = (value: unknown) =>
   typeof value === "string" ? value.replace(/^\/+/, "").replace(/\/+$/, "") : "";
 
-const stripMarkdownExtension = (filePath: string) => {
-  const extension = markdownExtensions.find((ext) => filePath.endsWith(ext));
-  if (!extension) return "";
-
-  return filePath.slice(0, -extension.length).replace(/\/index$/, "");
-};
-
 const getTitle = (file: QuartzPluginData & Record<string, unknown>) => {
   const frontmatter = file.frontmatter as { title?: unknown } | undefined;
   if (typeof frontmatter?.title === "string" && frontmatter.title.trim().length > 0) {
@@ -53,9 +46,7 @@ export const isContentPage = (file: QuartzPluginData & Record<string, unknown>) 
   if (excludedSlugs.includes(slug)) return false;
   if (excludedSlugPrefixes.some((prefix) => slug.startsWith(prefix))) return false;
 
-  const filePath = normalizePath(file.filePath ?? file.relativePath);
-  const sourceSlug = stripMarkdownExtension(filePath);
-  return sourceSlug.length === 0 || slug === sourceSlug;
+  return true;
 };
 
 export const getRandomNoteCandidates = (

@@ -1,6 +1,6 @@
 # Quartz Random Note
 
-A Quartz v5 community component plugin that adds a die-shaped random note button. It is intended to sit in the header with small chrome controls like reader mode and dark mode.
+A Quartz v5 community component plugin that adds a die-shaped random note button. It is intended to sit in the toolbar with small chrome controls like reader mode and dark mode.
 
 The button chooses from built Markdown content pages in the vault only. Files without a Markdown extension, images, bases, JSON files, tag pages, folder pages, and other generated pages are ignored.
 
@@ -12,18 +12,18 @@ npx quartz plugin add github:quartz-community/random-note
 
 ## Usage
 
-Register the component in your Quartz layout next to the reader mode and dark mode controls.
+Register the component in your Quartz config next to the reader mode and dark mode controls.
 
-```ts
-import * as Component from "./quartz/components";
-import * as RandomNotePlugin from "./.quartz/plugins/random-note";
-
-export const sharedPageComponents = {
-  header: [Component.Darkmode(), Component.ReaderMode(), RandomNotePlugin.RandomNote()],
-};
+```yaml
+plugins:
+  - source: github:quartz-community/random-note
+    enabled: true
+    layout:
+      position: left
+      group: toolbar
 ```
 
-The plugin manifest also exposes `RandomNote` as a component with a default header position for Quartz plugin discovery.
+The plugin manifest also exposes `RandomNote` as a component with a default `left` position and `toolbar` group for Quartz plugin discovery.
 
 ## Options
 

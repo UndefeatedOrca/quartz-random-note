@@ -13,11 +13,6 @@ var excludedSlugPrefixes = ["tag/", "tags/", "folder/", "folders/"];
 var excludedSlugs = ["tag", "tags", "folder", "folders"];
 var normalizePath = (value) => typeof value === "string" ? value.replace(/\\/g, "/").toLowerCase() : "";
 var normalizeSlug = (value) => typeof value === "string" ? value.replace(/^\/+/, "").replace(/\/+$/, "") : "";
-var stripMarkdownExtension = (filePath) => {
-  const extension = markdownExtensions.find((ext) => filePath.endsWith(ext));
-  if (!extension) return "";
-  return filePath.slice(0, -extension.length).replace(/\/index$/, "");
-};
 var getTitle = (file) => {
   const frontmatter = file.frontmatter;
   if (typeof frontmatter?.title === "string" && frontmatter.title.trim().length > 0) {
@@ -42,9 +37,7 @@ var isContentPage = (file) => {
   const slug = normalizeSlug(file.slug);
   if (excludedSlugs.includes(slug)) return false;
   if (excludedSlugPrefixes.some((prefix) => slug.startsWith(prefix))) return false;
-  const filePath = normalizePath(file.filePath ?? file.relativePath);
-  const sourceSlug = stripMarkdownExtension(filePath);
-  return sourceSlug.length === 0 || slug === sourceSlug;
+  return true;
 };
 var getRandomNoteCandidates = (allFiles, currentSlug, includeCurrentPage = false) => {
   const normalizedCurrentSlug = typeof currentSlug === "string" ? currentSlug : void 0;
@@ -58,7 +51,7 @@ var getRandomNoteCandidates = (allFiles, currentSlug, includeCurrentPage = false
 var random_note_default = '.random-note {\n  align-items: center;\n  background: transparent;\n  border: 0;\n  color: var(--darkgray);\n  cursor: pointer;\n  display: inline-flex;\n  height: 2rem;\n  justify-content: center;\n  padding: 0;\n  width: 2rem;\n}\n.random-note:hover, .random-note:focus-visible {\n  color: var(--secondary);\n}\n.random-note:focus-visible {\n  outline: 2px solid currentColor;\n  outline-offset: 2px;\n}\n.random-note:disabled {\n  cursor: not-allowed;\n  opacity: 0.45;\n}\n\n.random-note-die {\n  border: 1.75px solid currentColor;\n  border-radius: 4px;\n  box-sizing: border-box;\n  display: grid;\n  flex: 0 0 auto;\n  grid-template-columns: repeat(3, 1fr);\n  grid-template-rows: repeat(3, 1fr);\n  height: 1.25rem;\n  padding: 2px;\n  width: 1.25rem;\n}\n\n.random-note-dot {\n  align-self: center;\n  background: currentColor;\n  border-radius: 50%;\n  display: none;\n  height: 3px;\n  justify-self: center;\n  width: 3px;\n}\n\n.random-note-dot-1 {\n  grid-area: 1/1;\n}\n\n.random-note-dot-2 {\n  grid-area: 1/2;\n}\n\n.random-note-dot-3 {\n  grid-area: 1/3;\n}\n\n.random-note-dot-4 {\n  grid-area: 2/1;\n}\n\n.random-note-dot-5 {\n  grid-area: 2/2;\n}\n\n.random-note-dot-6 {\n  grid-area: 2/3;\n}\n\n.random-note-dot-7 {\n  grid-area: 3/1;\n}\n\n.random-note-dot-8 {\n  grid-area: 3/2;\n}\n\n.random-note-dot-9 {\n  grid-area: 3/3;\n}\n\n.random-note[data-face="1"] .random-note-dot-5,\n.random-note[data-face="2"] .random-note-dot-1,\n.random-note[data-face="2"] .random-note-dot-9,\n.random-note[data-face="3"] .random-note-dot-1,\n.random-note[data-face="3"] .random-note-dot-5,\n.random-note[data-face="3"] .random-note-dot-9,\n.random-note[data-face="4"] .random-note-dot-1,\n.random-note[data-face="4"] .random-note-dot-3,\n.random-note[data-face="4"] .random-note-dot-7,\n.random-note[data-face="4"] .random-note-dot-9,\n.random-note[data-face="5"] .random-note-dot-1,\n.random-note[data-face="5"] .random-note-dot-3,\n.random-note[data-face="5"] .random-note-dot-5,\n.random-note[data-face="5"] .random-note-dot-7,\n.random-note[data-face="5"] .random-note-dot-9,\n.random-note[data-face="6"] .random-note-dot-1,\n.random-note[data-face="6"] .random-note-dot-3,\n.random-note[data-face="6"] .random-note-dot-4,\n.random-note[data-face="6"] .random-note-dot-6,\n.random-note[data-face="6"] .random-note-dot-7,\n.random-note[data-face="6"] .random-note-dot-9 {\n  display: block;\n}';
 
 // src/components/scripts/random-note.inline.ts
-var random_note_inline_default = 'var r="quartz-random-note-pending-face",c=()=>String(Math.floor(Math.random()*6)+1),l=o=>{let e=o.dataset.notes;if(!e)return[];try{let n=JSON.parse(e);return Array.isArray(n)?n.filter(t=>typeof t.slug=="string"&&t.slug.length>0):[]}catch{return[]}},g=o=>{let e=o.replace(/^\\/+/,"").replace(/\\/index$/,""),n=e.length>0?`/${e}`:"/";return new URL(n,window.location.origin)},f=async o=>{let e=g(o);if(window.spaNavigate){await window.spaNavigate(e,!1);return}window.location.assign(e)},s=()=>{let o=document.querySelectorAll("[data-random-note]"),e=[],n=sessionStorage.getItem(r);n&&sessionStorage.removeItem(r);for(let t of o){if(n&&(t.dataset.face=n),t.dataset.randomNoteBound==="true")continue;t.dataset.randomNoteBound="true";let u=l(t);t.toggleAttribute("disabled",u.length===0);let i=()=>{let a=l(t);if(a.length===0)return;t.dataset.face=c();let d=a[Math.floor(Math.random()*a.length)];d&&(sessionStorage.setItem(r,c()),f(d.slug))};t.addEventListener("click",i),e.push(()=>t.removeEventListener("click",i))}window.addCleanup&&window.addCleanup(()=>e.forEach(t=>t()))};typeof document<"u"&&(s(),document.addEventListener("nav",s),document.addEventListener("render",s));\n';
+var random_note_inline_default = 'var s="quartz-random-note-pending-face",f=()=>String(Math.floor(Math.random()*6)+1),u=a=>a.replace(/^\\/+/,"").replace(/\\/+$/,""),g=a=>u(a).replace(/\\/index$/,""),l=a=>{let e=a.dataset.notes;if(!e)return[];try{let t=JSON.parse(e);return Array.isArray(t)?t.filter(n=>typeof n.slug=="string"&&n.slug.length>0):[]}catch{return[]}},m=async()=>{try{return new Set(Object.keys(await fetchData))}catch{return null}},h=async a=>{let e=await m();return e?a.filter(t=>e.has(t.slug)):a},p=a=>{let e=g(a.dataset.currentSlug??"");if(e.length===0)return"";let t=u(decodeURIComponent(window.location.pathname));return t===e||!t.endsWith(`/${e}`)?"":`/${t.slice(0,-e.length).replace(/\\/+$/,"")}`},w=(a,e)=>{let t=g(a),n=p(e),o=t.length>0?`${n}/${t}`:`${n}/`;return new URL(o,window.location.origin)},S=async(a,e)=>{let t=w(a,e);if(window.spaNavigate){await window.spaNavigate(t,!1);return}window.location.assign(t)},i=()=>{let a=document.querySelectorAll("[data-random-note]"),e=[],t=sessionStorage.getItem(s);t&&sessionStorage.removeItem(s);for(let n of a){if(t&&(n.dataset.face=t),n.dataset.randomNoteBound==="true")continue;n.dataset.randomNoteBound="true";let o=l(n);n.toggleAttribute("disabled",o.length===0);let c=async()=>{let r=await h(l(n));if(r.length===0)return;let d=r[Math.floor(Math.random()*r.length)];d&&(sessionStorage.setItem(s,f()),await S(d.slug,n))};n.addEventListener("click",c),e.push(()=>n.removeEventListener("click",c))}window.addCleanup&&window.addCleanup(()=>e.forEach(n=>n()))};typeof document<"u"&&(i(),document.addEventListener("nav",i),document.addEventListener("render",i));\n';
 var l;
 l = { __e: function(n2, l2, u3, t2) {
   for (var i2, o2, r2; l2 = l2.__; ) if ((i2 = l2.__c) && !i2.__) try {
@@ -95,6 +88,7 @@ var RandomNote_default = ((opts) => {
         title: label,
         "data-random-note": true,
         "data-notes": JSON.stringify(notes),
+        "data-current-slug": props.fileData?.slug,
         "data-face": "1",
         children: /* @__PURE__ */ u2("span", { class: "random-note-die", "aria-hidden": "true", children: dieDots })
       }

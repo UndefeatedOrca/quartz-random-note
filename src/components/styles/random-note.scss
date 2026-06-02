@@ -1,0 +1,110 @@
+.random-note {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--darkgray);
+  cursor: pointer;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  width: 2rem;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--secondary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+.random-note-die {
+  border: 1.75px solid currentColor;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  height: 1.25rem;
+  padding: 2px;
+  width: 1.25rem;
+}
+
+.random-note-dot {
+  align-self: center;
+  background: currentColor;
+  border-radius: 50%;
+  display: none;
+  height: 3px;
+  justify-self: center;
+  width: 3px;
+}
+
+.random-note-dot-1 {
+  grid-area: 1 / 1;
+}
+
+.random-note-dot-2 {
+  grid-area: 1 / 2;
+}
+
+.random-note-dot-3 {
+  grid-area: 1 / 3;
+}
+
+.random-note-dot-4 {
+  grid-area: 2 / 1;
+}
+
+.random-note-dot-5 {
+  grid-area: 2 / 2;
+}
+
+.random-note-dot-6 {
+  grid-area: 2 / 3;
+}
+
+.random-note-dot-7 {
+  grid-area: 3 / 1;
+}
+
+.random-note-dot-8 {
+  grid-area: 3 / 2;
+}
+
+.random-note-dot-9 {
+  grid-area: 3 / 3;
+}
+
+.random-note[data-face="1"] .random-note-dot-5,
+.random-note[data-face="2"] .random-note-dot-1,
+.random-note[data-face="2"] .random-note-dot-9,
+.random-note[data-face="3"] .random-note-dot-1,
+.random-note[data-face="3"] .random-note-dot-5,
+.random-note[data-face="3"] .random-note-dot-9,
+.random-note[data-face="4"] .random-note-dot-1,
+.random-note[data-face="4"] .random-note-dot-3,
+.random-note[data-face="4"] .random-note-dot-7,
+.random-note[data-face="4"] .random-note-dot-9,
+.random-note[data-face="5"] .random-note-dot-1,
+.random-note[data-face="5"] .random-note-dot-3,
+.random-note[data-face="5"] .random-note-dot-5,
+.random-note[data-face="5"] .random-note-dot-7,
+.random-note[data-face="5"] .random-note-dot-9,
+.random-note[data-face="6"] .random-note-dot-1,
+.random-note[data-face="6"] .random-note-dot-3,
+.random-note[data-face="6"] .random-note-dot-4,
+.random-note[data-face="6"] .random-note-dot-6,
+.random-note[data-face="6"] .random-note-dot-7,
+.random-note[data-face="6"] .random-note-dot-9 {
+  display: block;
+}

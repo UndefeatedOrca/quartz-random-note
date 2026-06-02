@@ -2,12 +2,14 @@
 
 A Quartz v5 community component plugin that adds a die-shaped random note button. It is intended to sit in the toolbar with small chrome controls like reader mode and dark mode.
 
-The button chooses from built Markdown content pages in the vault only. Files without a Markdown extension, images, bases, JSON files, tag pages, folder pages, and other generated pages are ignored.
+Vibe-coded with Codex (allegedly GPT-5.5), I do not know how or why this works.
+
+The button chooses from content, tag, and folder pages (though it doesn't want to).
 
 ## Install
 
 ```bash
-npx quartz plugin add github:quartz-community/random-note
+npx quartz plugin add github:UndefeatedOrca/quartz-random-note
 ```
 
 ## Usage
@@ -16,14 +18,19 @@ Register the component in your Quartz config next to the reader mode and dark mo
 
 ```yaml
 plugins:
-  - source: github:quartz-community/random-note
+  - source: github:UndefeatedOrca/quartz-random-note
     enabled: true
+    options:
+      label: Open a random note
+      includeCurrentPage: false
+    order: 50
     layout:
       position: left
       group: toolbar
+      priority: 55
 ```
 
-The plugin manifest also exposes `RandomNote` as a component with a default `left` position and `toolbar` group for Quartz plugin discovery.
+The plugin manifest also exposes `RandomNote` as a component with a default `left` position for Quartz plugin discovery. **To place it on your toolbar, you must add the toolbar group** (I don't know how to fix this).
 
 ## Options
 
@@ -36,7 +43,7 @@ RandomNote({
 ```
 
 - `label`: Accessible label and tooltip text for the button.
-- `includeCurrentPage`: Include the current Markdown page in the random note pool.
+- `includeCurrentPage`: Include the current Markdown page in the random note pool - I don't know why you would want this, but go for it.
 - `className`: Optional extra CSS class for local layout tweaks.
 
 ## Behavior

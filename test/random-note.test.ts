@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getRandomNoteCandidates, isMarkdownVaultFile } from "../src/random-note";
+import { getRandomNoteCandidates, isContentPage, isMarkdownVaultFile } from "../src/random-note";
 
 describe("RandomNote", () => {
   it("only includes markdown files from the vault", () => {
@@ -21,9 +21,19 @@ describe("RandomNote", () => {
         slug: "notes/beta",
         relativePath: "notes/beta.markdown",
       },
+      {
+        slug: "tags/project",
+        filePath: "tags/project.md",
+      },
+      {
+        slug: "notes",
+        filePath: "notes/index.md",
+        pageType: "folder",
+      },
     ] as Array<Record<string, unknown>>;
 
-    expect(files.map(isMarkdownVaultFile)).toEqual([true, false, false, true]);
+    expect(files.map(isMarkdownVaultFile)).toEqual([true, false, false, true, true, true]);
+    expect(files.map(isContentPage)).toEqual([true, false, false, true, false, false]);
     expect(getRandomNoteCandidates(files, "notes/alpha")).toEqual([
       {
         slug: "notes/beta",

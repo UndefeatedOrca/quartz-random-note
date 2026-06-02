@@ -83,7 +83,9 @@
   "quartz": {
     "name": "random-note",
     "displayName": "Random Note",
-    "category": "component",
+    "category": [
+      "component"
+    ],
     "version": "1.0.0",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
@@ -107,8 +109,8 @@
     "components": {
       "RandomNote": {
         "displayName": "Random Note",
-        "defaultPosition": "right",
-        "defaultPriority": 45
+        "defaultPosition": "header",
+        "defaultPriority": 55
       }
     }
   },

@@ -3,6 +3,8 @@ type RandomNoteCandidate = {
   title: string;
 };
 
+const pendingFaceStorageKey = "quartz-random-note-pending-face";
+
 const rollDie = () => String(Math.floor(Math.random() * 6) + 1);
 
 const parseNotes = (button: HTMLElement): RandomNoteCandidate[] => {
@@ -38,13 +40,21 @@ const navigateTo = async (slug: string) => {
 const bindRandomNote = () => {
   const buttons = document.querySelectorAll<HTMLElement>("[data-random-note]");
   const cleanupFns: Array<() => void> = [];
+  const pendingFace = sessionStorage.getItem(pendingFaceStorageKey);
+
+  if (pendingFace) {
+    sessionStorage.removeItem(pendingFaceStorageKey);
+  }
 
   for (const button of buttons) {
+    if (pendingFace) {
+      button.dataset.face = pendingFace;
+    }
+
     if (button.dataset.randomNoteBound === "true") continue;
     button.dataset.randomNoteBound = "true";
 
     const notes = parseNotes(button);
-    button.dataset.face = rollDie();
     button.toggleAttribute("disabled", notes.length === 0);
 
     const clickHandler = () => {
@@ -55,6 +65,7 @@ const bindRandomNote = () => {
       const note = currentNotes[Math.floor(Math.random() * currentNotes.length)];
       if (!note) return;
 
+      sessionStorage.setItem(pendingFaceStorageKey, rollDie());
       void navigateTo(note.slug);
     };
 
